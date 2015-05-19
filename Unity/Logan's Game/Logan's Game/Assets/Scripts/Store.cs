@@ -7,40 +7,47 @@ public class Store : MonoBehaviour {
 	public GUIText itemName;
 	public GUIText itemPrice;
 	public ArrayList sitems = new ArrayList();
-	public GameObject current;
-	public StoreItem currentitem;
-	public int currentint = 0;
-	public int itemslegnth;
+	private static StoreItem currentitem;
+	private int currentint = 0;
+	private int itemslegnth;
 	// Use this for initialization
 	void Start () {
 
-		StoreItem[] sitems = FindObjectsOfType(typeof(StoreItem)) as StoreItem[];
+	    StoreItem[] sitems = FindObjectsOfType(typeof(StoreItem)) as StoreItem[];
 		Debug.Log ("Found " + sitems.Length.ToString() + " Items");
 		for (int i = 0; i < sitems.Length; i++) {
-			current = sitems[i].gameObject;
+			GameObject current = sitems[i].gameObject;
 			currentitem = current.GetComponent<StoreItem>();
 			int price = currentitem.price;
 			string itemname = currentitem.itemName;
+			current.transform.position = new Vector3(0.0f, 0.0f, 0.0f);
 			Debug.Log ("Price: " + price.ToString());
 			Debug.Log ("Item Name" + itemname);
 		}
 		itemslegnth = sitems.Length;
+		Store.updateDisplay(0);
 	
 	}
 	
-	public void updateDisplay(){
-		sitems [currentint] = (GameObject)current;
-		Vector3 center = new Vector3(-65, 58, -419);
-		current.transform.position = center ;
+	public static void updateDisplay(int itemCount){
+		StoreItem[] sitems = FindObjectsOfType(typeof(StoreItem)) as StoreItem[];
+		Debug.Log (itemCount);
+		GameObject current = sitems[itemCount].gameObject;
+		current.transform.position = new Vector3(-65.0f, 58.0f, -419.0f);
+		currentitem = current.GetComponent<StoreItem>();
+		int price = currentitem.price;
+		string itemname = currentitem.itemName;
+		Debug.Log ("Price: " + price.ToString());
+		Debug.Log ("Item Name" + itemname);
 
 	}
 
 	public void nextItem(){
 		currentint = currentint + 1;
-		if (currentint > itemslegnth) {
+		if (currentint > itemslegnth - 1) {
 			currentint = 0;
 		}
-		updateDisplay ();
+		updateDisplay (currentint);
 
 	}
 
@@ -49,6 +56,6 @@ public class Store : MonoBehaviour {
 		if (currentint < 0) {
 			currentint = itemslegnth;
 		}
-		updateDisplay ();
+		updateDisplay (currentint);
 	}
 }
